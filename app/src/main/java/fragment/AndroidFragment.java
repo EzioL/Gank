@@ -2,21 +2,11 @@ package fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.renderscript.Type;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.ezio.gank.R;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import adapter.MyAdapter;
@@ -45,17 +35,15 @@ public class AndroidFragment extends Fragment {
         mDadaList = new ArrayList<>();
         mCache = ACache.get(getActivity());
         // Requests();
-        initData();
+        init();
         return view;
     }
 
-    private void initData() {
+    private void init() {
 
         if (mCache.getAsObject("Android") != null){
             mData = (TypeData) mCache.getAsObject("Android");
-            mDadaList.addAll(mData.getResults());
-            adapter = new MyAdapter(getActivity(),mDadaList);
-            mListView.setAdapter(adapter);
+            initData();
         }else{
             Requests();
         }
@@ -76,11 +64,8 @@ public class AndroidFragment extends Fragment {
                 if (response.body()!=null){
                     mData = response.body();
                     mCache.put("Android",mData);
-                   // initData();
 
-                    mDadaList.addAll(mData.getResults());
-                    adapter = new MyAdapter(getActivity(),mDadaList);
-                    mListView.setAdapter(adapter);
+                    initData();
                 }
             }
             @Override
@@ -88,6 +73,12 @@ public class AndroidFragment extends Fragment {
                 
             }
         });
+    }
+
+    private void initData() {
+        mDadaList.addAll(mData.getResults());
+        adapter = new MyAdapter(getActivity(),mDadaList);
+        mListView.setAdapter(adapter);
     }
 
 }
