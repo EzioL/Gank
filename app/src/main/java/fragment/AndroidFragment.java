@@ -43,21 +43,23 @@ public class AndroidFragment extends Fragment {
         View view = inflater.inflate(R.layout.fargment_android,null);
         mListView = (ListView) view.findViewById(R.id.lv_android);
         mDadaList = new ArrayList<>();
+        mCache = ACache.get(getActivity());
+        // Requests();
         initData();
         return view;
     }
 
     private void initData() {
-        mCache = ACache.get(getActivity());
+
         if (mCache.getAsObject("Android") != null){
             mData = (TypeData) mCache.getAsObject("Android");
-
+            mDadaList.addAll(mData.getResults());
+            adapter = new MyAdapter(getActivity(),mDadaList);
+            mListView.setAdapter(adapter);
         }else{
             Requests();
         }
-        mDadaList.addAll(mData.getResults());
-        adapter = new MyAdapter(getActivity(),mDadaList);
-        mListView.setAdapter(adapter);
+
     }
 
     private void Requests() {
@@ -67,13 +69,18 @@ public class AndroidFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())//解析方式
                 .build();
         Api api = retrofit.create(Api.class);
-        Call<TypeData> call = api.data(Api.Android,20,1);
+        Call<TypeData> call = api.data(Api.Android,10,1);
         call.enqueue(new Callback<TypeData>() {
             @Override
             public void onResponse(Call<TypeData> call, Response<TypeData> response) {
                 if (response.body()!=null){
                     mData = response.body();
                     mCache.put("Android",mData);
+                   // initData();
+
+                    mDadaList.addAll(mData.getResults());
+                    adapter = new MyAdapter(getActivity(),mDadaList);
+                    mListView.setAdapter(adapter);
                 }
             }
             @Override
