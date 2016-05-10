@@ -85,7 +85,7 @@ public class AndroidFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<TypeData> call, Throwable t) {
-
+                
             }
         });
     }
