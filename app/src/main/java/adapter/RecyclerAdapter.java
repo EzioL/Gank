@@ -2,7 +2,6 @@ package adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_android,parent,false);
+        View view = mInflater.inflate(R.layout.item_base,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }

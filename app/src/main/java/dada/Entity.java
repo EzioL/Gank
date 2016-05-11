@@ -63,34 +63,4 @@ public class Entity implements Serializable{
     public String getWho() {
         return who;
     }
-
-
-    /*public String toString() {
-        return "{" +
-                "_id"+":" + _id + '\'' +
-                ", createdAt" +":"+ createdAt + '\'' +
-                ", desc" +":"+ desc + '\'' +
-                ", publishedAt"+":" + publishedAt + '\'' +
-                ", source" +":"+ source + '\'' +
-                ", type" +":"+ type + '\'' +
-                ", url"+":" + url + '\'' +
-                ", used" +":"+ used +
-                ", who"+":" + who + '\'' +
-                '}';
-    }*/
-
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "_id='" + _id + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", desc='" + desc + '\'' +
-                ", publishedAt='" + publishedAt + '\'' +
-                ", source='" + source + '\'' +
-                ", type='" + type + '\'' +
-                ", url='" + url + '\'' +
-                ", used=" + used +
-                ", who='" + who + '\'' +
-                '}';
-    }
 }

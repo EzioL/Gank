@@ -1,26 +1,38 @@
-package com.ezio.refreshandloadmore;
+package adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ezio.gank.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends Adapter<ViewHolder> {
+import dada.Entity;
 
+/**
+ * Created by Ezio on 2016/5/11.
+ */
+public class RecyclerViewAdapter extends Adapter<ViewHolder> {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
     private Context context;
-    private List data;
+    private ArrayList<Entity> data;
+    LayoutInflater mInflater;
 
 
-    public RecyclerViewAdapter(Context context, List data) {
+    public RecyclerViewAdapter(Context context, ArrayList<Entity> data) {
         this.context = context;
         this.data = data;
+        mInflater = LayoutInflater.from(context);
+
     }
 
     public interface OnItemClickListener {
@@ -52,11 +64,11 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_base, parent,
+            View view = mInflater.inflate(R.layout.item_base, parent,
                     false);
             return new ItemViewHolder(view);
         } else if (viewType == TYPE_FOOTER) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_foot, parent,
+            View view = mInflater.inflate(R.layout.item_foot, parent,
                     false);
             return new FootViewHolder(view);
         }
@@ -66,11 +78,9 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-
-
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder) holder).tv.setText(position+" ");
-
+            String desc = data.get(position).getDesc();
+            ((ItemViewHolder) holder).desc.setText(" "+desc);
             if (onItemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -95,11 +105,11 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
 
     static class ItemViewHolder extends ViewHolder {
 
-        TextView tv;
+        TextView desc;
 
         public ItemViewHolder(View view) {
             super(view);
-            tv = (TextView) view.findViewById(R.id.tv_date);
+            desc = (TextView) view.findViewById(R.id.content_tv);
         }
     }
 

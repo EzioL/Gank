@@ -75,7 +75,8 @@ public class HomeActivity extends AppCompatActivity
         mFragmentTransaction.hide(mHomeFragment);
         mFragmentTransaction.commit();
         hideFragments();
-        showFragment(mHomeFragment);
+        //showFragment(mHomeFragment);
+        showFragment(mWebFragment);
     }
 
     private void hideFragments() {
