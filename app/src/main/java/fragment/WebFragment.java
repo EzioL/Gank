@@ -1,6 +1,7 @@
 package fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import adapter.RecyclerViewAdapter;
 import api.Api;
@@ -42,10 +43,10 @@ public class WebFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fargment_web,null);
+        View view = inflater.inflate(R.layout.fargment_data,null);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_web);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.SwipeRefreshLayout_web);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.SwipeRefreshLayout);
         data =  new ArrayList<>();
         adapter = new RecyclerViewAdapter(getActivity(), data);
 
@@ -119,7 +120,10 @@ public class WebFragment extends Fragment {
         adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getActivity(), "position:"+position, Toast.LENGTH_SHORT).show();
+                String url = data.get(position).getUrl();
+                Intent intent = new Intent(getActivity(), DisplayActivity.class);
+                intent.putExtra("url",url);
+                getActivity().startActivity(intent);
             }
 
             @Override
@@ -132,17 +136,7 @@ public class WebFragment extends Fragment {
 
 
 
-
-
-
     private void getData() {
-        /*for (int i = 0; i < 10; i++) {
-            Entity entity = new Entity();
-            data.add(entity);
-        }
-        adapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
-        adapter.notifyItemRemoved(adapter.getItemCount());*/
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl("http://gank.io/")// 定义访问的主机地址

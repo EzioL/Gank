@@ -15,9 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import api.Api;
 import fragment.AndroidFragment;
 import fragment.ExpandFragment;
 import fragment.HomeFragment;
+import fragment.MyFragment;
 import fragment.VideoFragment;
 import fragment.WebFragment;
 import fragment.WelfareFragment;
@@ -26,69 +28,57 @@ import fragment.iOSFragment;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     //声明碎片相关对象
+
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-    AndroidFragment mAndroidFragment;
-    ExpandFragment mExpandFragment;
+    MyFragment mAndroidFragment,mExpandFragment,mIOSFragment,
+            mVideoFragment,mWebFragment;
     HomeFragment mHomeFragment;
-    iOSFragment mIOSFragment;
-    VideoFragment mVideoFragment;
-    WebFragment mWebFragment;
     WelfareFragment mWelfareFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        setTitle("首页");
-        mFragmentManager = getFragmentManager();
-        initFragments();
+        initDefault();
         initViews();
 
     }
 
-    private void initFragments() {
-
+    private void initDefault() {
+        setTitle("首页");
+        mFragmentManager = getFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
-
+        //默认显示首页
         mHomeFragment = new HomeFragment();
         mFragmentTransaction.add(R.id.content_fl, mHomeFragment);
-
-        mAndroidFragment = new AndroidFragment();
-        mFragmentTransaction.add(R.id.content_fl, mAndroidFragment);
-
-        mExpandFragment = new ExpandFragment();
-        mFragmentTransaction.add(R.id.content_fl, mExpandFragment);
-
-        mIOSFragment = new iOSFragment();
-        mFragmentTransaction.add(R.id.content_fl, mIOSFragment);
-
-        mVideoFragment = new VideoFragment();
-        mFragmentTransaction.add(R.id.content_fl, mVideoFragment);
-
-        mWebFragment = new WebFragment();
-        mFragmentTransaction.add(R.id.content_fl, mWebFragment);
-
-        mWelfareFragment = new WelfareFragment();
-        mFragmentTransaction.add(R.id.content_fl, mWelfareFragment);
-
-        mFragmentTransaction.hide(mHomeFragment);
         mFragmentTransaction.commit();
-        hideFragments();
-        //showFragment(mHomeFragment);
-        showFragment(mWebFragment);
     }
 
-    private void hideFragments() {
-        //隐藏所有的碎片，已经初始化和不为空
+    private void hideAllFragments() {
         mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.hide(mHomeFragment);
-        mFragmentTransaction.hide(mAndroidFragment);
-        mFragmentTransaction.hide(mExpandFragment);
-        mFragmentTransaction.hide(mIOSFragment);
-        mFragmentTransaction.hide(mVideoFragment);
-        mFragmentTransaction.hide(mWebFragment);
-        mFragmentTransaction.hide(mWelfareFragment);
+        //隐藏所有的碎片，首先需要知道碎片是否已经添加到事务中
+        if (mHomeFragment != null && mHomeFragment.isAdded()){
+            mFragmentTransaction.hide(mHomeFragment);
+        }
+        if (mAndroidFragment != null && mAndroidFragment.isAdded()){
+            mFragmentTransaction.hide(mAndroidFragment);
+        }
+        if (mExpandFragment != null && mExpandFragment.isAdded()){
+            mFragmentTransaction.hide(mExpandFragment);
+        }
+        if (mIOSFragment != null && mIOSFragment.isAdded()){
+            mFragmentTransaction.hide(mIOSFragment);
+        }
+        if (mVideoFragment != null && mVideoFragment.isAdded()){
+            mFragmentTransaction.hide(mVideoFragment);
+        }
+        if (mWebFragment != null && mWebFragment.isAdded()){
+            mFragmentTransaction.hide(mWebFragment);
+        }
+        if (mWelfareFragment != null && mWelfareFragment.isAdded()){
+            mFragmentTransaction.hide(mWelfareFragment);
+        }
+
         mFragmentTransaction.commit();
     }
     private void showFragment(Fragment fragment) {
@@ -146,38 +136,67 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        //隐藏所有已经添加到事务中的碎片
+        hideAllFragments();
+        //初始化事务
+        mFragmentTransaction = mFragmentManager.beginTransaction();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_main) {
             // Handle the camera action
-            hideFragments();
-            showFragment(mHomeFragment);
+            mFragmentTransaction.show(mHomeFragment);
             setTitle("首页");
+
         } else if (id == R.id.nav_welfare) {
-            hideFragments();
-            showFragment(mWelfareFragment);
+            if (mWelfareFragment == null){
+                mWelfareFragment = new WelfareFragment();
+                mFragmentTransaction.add(R.id.content_fl, mWelfareFragment);
+            } else {
+                mFragmentTransaction.show(mHomeFragment);
+            }
             setTitle("福利");
         }else if (id == R.id.nav_anroid) {
-            hideFragments();
-            showFragment(mAndroidFragment);
+            if (mAndroidFragment == null){
+                mAndroidFragment = new MyFragment();
+                mAndroidFragment.setType(Api.Android);
+                mFragmentTransaction.add(R.id.content_fl, mAndroidFragment);
+            } else {
+                mFragmentTransaction.show(mAndroidFragment);
+            }
             setTitle("Android");
         }else if (id == R.id.nav_ios) {
-            hideFragments();
-            showFragment(mIOSFragment);
+            if (mIOSFragment == null){
+                mIOSFragment = new MyFragment();
+                mIOSFragment.setType(Api.IOS);
+                mFragmentTransaction.add(R.id.content_fl, mIOSFragment);
+            } else {
+                mFragmentTransaction.show(mIOSFragment);
+            }
             setTitle("iOS");
         }else if (id == R.id.nav_web) {
-            hideFragments();
-            showFragment(mWebFragment);
+            if (mWebFragment == null){
+                mWebFragment = new MyFragment();
+                mWebFragment.setType(Api.Web);
+                mFragmentTransaction.add(R.id.content_fl, mWebFragment);
+            } else {
+                mFragmentTransaction.show(mIOSFragment);
+            }
             setTitle("前端");
         }else if (id == R.id.nav_video) {
-            hideFragments();
-            showFragment(mVideoFragment);
+
             setTitle("休息视频");
         }else if (id == R.id.nav_expand) {
-            hideFragments();
-            showFragment(mExpandFragment);
+            if (mExpandFragment == null){
+                mExpandFragment = new MyFragment();
+                mExpandFragment.setType(Api.Expandresources);
+                mFragmentTransaction.add(R.id.content_fl, mExpandFragment);
+            } else {
+                mFragmentTransaction.show(mIOSFragment);
+            }
             setTitle("扩展资源");
         }
+        //提交事务
+        mFragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

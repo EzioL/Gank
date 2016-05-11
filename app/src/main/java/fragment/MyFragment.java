@@ -12,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
+
 import java.util.ArrayList;
-import adapter.RecyclerAdapter;
+
 import adapter.RecyclerViewAdapter;
 import api.Api;
 import dada.Entity;
@@ -25,13 +27,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import simplecache.ACache;
-
 
 /**
- * Created by Ezio on 2016/5/7.
+ * Created by Ezio on 2016/5/11.
  */
-public class iOSFragment extends Fragment {
+public class MyFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     boolean isLoading;
@@ -39,8 +39,11 @@ public class iOSFragment extends Fragment {
     private RecyclerViewAdapter adapter;
     private Handler handler = new Handler();
     int page = 1;
-    @Nullable
-    @Override
+    String type;
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fargment_data,null);
 
@@ -143,7 +146,7 @@ public class iOSFragment extends Fragment {
                 .build();
         Api api = retrofit.create(Api.class);
         Log.e( "page: ", page+"");
-        Call<TypeData> call = api.data(Api.Web,10,page++);
+        Call<TypeData> call = api.data(type,10,page++);
         call.enqueue(new Callback<TypeData>() {
             @Override
             public void onResponse(Call<TypeData> call, Response<TypeData> response) {
