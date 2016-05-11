@@ -98,5 +98,6 @@ public class iOSFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
+       
     }
 }
