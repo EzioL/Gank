@@ -17,9 +17,12 @@ import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import adapter.RecyclerViewAdapter;
 import api.Api;
+import dada.CacheData;
 import dada.Entity;
 import dada.TypeData;
 import retrofit2.Call;
@@ -27,9 +30,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import simplecache.ACache;
 
 /**
- * Created by Ezio on 2016/5/11.
+ * Created by Ezio on 2016/5/11
  */
 public class MyFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
@@ -43,6 +47,7 @@ public class MyFragment extends Fragment {
     public void setType(String type) {
         this.type = type;
     }
+    ACache mCache;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fargment_data,null);
@@ -51,7 +56,7 @@ public class MyFragment extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.SwipeRefreshLayout);
         data =  new ArrayList<>();
         adapter = new RecyclerViewAdapter(getActivity(), data);
-
+        mCache = ACache.get(getActivity());
         initViews();
         initData();
         return view;
@@ -139,6 +144,12 @@ public class MyFragment extends Fragment {
 
 
     private void getData() {
+        //这里应该判断网络状态而进行显示缓存还是加载新内容
+
+        onRefresh();
+    }
+
+    private void onRefresh() {
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl("http://gank.io/")// 定义访问的主机地址
@@ -154,8 +165,12 @@ public class MyFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyItemRemoved(adapter.getItemCount());
-            }
 
+                //缓存当前请求页数+数据(最开始使用Map,Map不支持序列化)
+                //以后进行判断加载
+                CacheData cacheData = new CacheData(page,data);
+                mCache.put(type, cacheData);
+            }
             @Override
             public void onFailure(Call<TypeData> call, Throwable t) {
 

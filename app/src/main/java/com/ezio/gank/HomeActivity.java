@@ -16,14 +16,9 @@ import android.view.MenuItem;
 
 
 import api.Api;
-import fragment.AndroidFragment;
-import fragment.ExpandFragment;
 import fragment.HomeFragment;
 import fragment.MyFragment;
-import fragment.VideoFragment;
-import fragment.WebFragment;
 import fragment.WelfareFragment;
-import fragment.iOSFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +28,7 @@ public class HomeActivity extends AppCompatActivity
     FragmentTransaction mFragmentTransaction;
     MyFragment mAndroidFragment,mExpandFragment,mIOSFragment,
             mVideoFragment,mWebFragment;
+
     HomeFragment mHomeFragment;
     WelfareFragment mWelfareFragment;
     @Override
@@ -120,9 +116,6 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -183,7 +176,13 @@ public class HomeActivity extends AppCompatActivity
             }
             setTitle("前端");
         }else if (id == R.id.nav_video) {
-
+            if (mVideoFragment == null){
+                mVideoFragment = new MyFragment();
+                mVideoFragment.setType(Api.VideoRest);
+                mFragmentTransaction.add(R.id.content_fl, mVideoFragment);
+            } else {
+                mFragmentTransaction.show(mIOSFragment);
+            }
             setTitle("休息视频");
         }else if (id == R.id.nav_expand) {
             if (mExpandFragment == null){

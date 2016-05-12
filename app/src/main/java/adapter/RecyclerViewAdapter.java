@@ -80,7 +80,9 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
             String desc = data.get(position).getDesc();
+            String who = data.get(position).getWho();
             ((ItemViewHolder) holder).desc.setText(" "+desc);
+            ((ItemViewHolder) holder).who.setText("(vai: "+who+")");
             if (onItemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -106,10 +108,11 @@ public class RecyclerViewAdapter extends Adapter<ViewHolder> {
     static class ItemViewHolder extends ViewHolder {
 
         TextView desc;
-
+        TextView who;
         public ItemViewHolder(View view) {
             super(view);
-            desc = (TextView) view.findViewById(R.id.content_tv);
+            desc = (TextView) view.findViewById(R.id.desc_tv);
+            who = (TextView) view.findViewById(R.id.who_tv);
         }
     }
 

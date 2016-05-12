@@ -68,7 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         TextView mTextView;
         public ViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(R.id.content_tv );
+            mTextView = (TextView) itemView.findViewById(R.id.desc_tv );
 
 
             /*itemView.setOnClickListener(new View.OnClickListener() {
