@@ -17,9 +17,12 @@ import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import adapter.RecyclerViewAdapter;
 import api.Api;
+import dada.CacheData;
 import dada.Entity;
 import dada.TypeData;
 import retrofit2.Call;
@@ -27,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import simplecache.ACache;
 
 /**
  * Created by Ezio on 2016/5/11.
@@ -36,10 +40,14 @@ public class MyFragment extends Fragment {
     RecyclerView recyclerView;
     boolean isLoading;
     private ArrayList<Entity> data ;
+
     private RecyclerViewAdapter adapter;
     private Handler handler = new Handler();
     int page = 1;
     String type;
+    //缓存类
+    ACache mCache;
+
     public void setType(String type) {
         this.type = type;
     }
@@ -51,9 +59,11 @@ public class MyFragment extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.SwipeRefreshLayout);
         data =  new ArrayList<>();
         adapter = new RecyclerViewAdapter(getActivity(), data);
+        mCache = ACache.get(getActivity());
 
-        initViews();
         initData();
+        initViews();
+
         return view;
     }
 
@@ -82,7 +92,7 @@ public class MyFragment extends Fragment {
                     public void run() {
                         page = 1;
                         data.clear();
-                        getData();
+                        onRefresh();
                     }
                 },2000);
             }
@@ -110,7 +120,7 @@ public class MyFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                getData();
+                                onRefresh();
                                 isLoading = false;
                             }
                         }, 1000);
@@ -139,21 +149,42 @@ public class MyFragment extends Fragment {
 
 
     private void getData() {
+        if (mCache.getAsObject(type) != null){
+
+            CacheData cacheData = (CacheData) mCache.getAsObject(type);
+            page = cacheData.getPage();
+            data.addAll(cacheData.getData());
+            adapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+            adapter.notifyItemRemoved(adapter.getItemCount());
+
+        }else {
+            onRefresh();
+        }
+    }
+
+
+
+    private void onRefresh() {
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl("http://gank.io/")// 定义访问的主机地址
                 .addConverterFactory(GsonConverterFactory.create())//解析方式
                 .build();
         Api api = retrofit.create(Api.class);
-        Log.e( "page: ", page+"");
-        Call<TypeData> call = api.data(type,10,page++);
+        Log.e("page: ", page + "");
+        Call<TypeData> call = api.data(type, 10, page++);
         call.enqueue(new Callback<TypeData>() {
             @Override
             public void onResponse(Call<TypeData> call, Response<TypeData> response) {
+
                 data.addAll(response.body().getResults());
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
                 adapter.notifyItemRemoved(adapter.getItemCount());
+                //缓存当前请求页数+数据(最开始使用Map,Map不支持序列化)
+                CacheData cacheData = new CacheData(page,data);
+                mCache.put(type, cacheData);
             }
 
             @Override

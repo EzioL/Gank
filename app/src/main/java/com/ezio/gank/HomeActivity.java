@@ -16,14 +16,9 @@ import android.view.MenuItem;
 
 
 import api.Api;
-import fragment.AndroidFragment;
-import fragment.ExpandFragment;
 import fragment.HomeFragment;
 import fragment.MyFragment;
-import fragment.VideoFragment;
-import fragment.WebFragment;
 import fragment.WelfareFragment;
-import fragment.iOSFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -183,7 +178,13 @@ public class HomeActivity extends AppCompatActivity
             }
             setTitle("前端");
         }else if (id == R.id.nav_video) {
-
+            if (mVideoFragment == null){
+                mVideoFragment = new MyFragment();
+                mVideoFragment.setType(Api.VideoRest);
+                mFragmentTransaction.add(R.id.content_fl, mVideoFragment);
+            } else {
+                mFragmentTransaction.show(mIOSFragment);
+            }
             setTitle("休息视频");
         }else if (id == R.id.nav_expand) {
             if (mExpandFragment == null){
