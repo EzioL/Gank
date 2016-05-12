@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +16,6 @@ import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import adapter.RecyclerViewAdapter;
 import api.Api;
@@ -33,21 +30,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import simplecache.ACache;
 
 /**
- * Created by Ezio on 2016/5/11
+ * Created by Ezio on 2016/5/12.
  */
-public class MyFragment extends Fragment {
+public class DataFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     boolean isLoading;
     private ArrayList<Entity> data ;
+
     private RecyclerViewAdapter adapter;
     private Handler handler = new Handler();
     int page = 1;
     String type;
+
     public void setType(String type) {
         this.type = type;
     }
     ACache mCache;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fargment_data,null);
@@ -57,8 +57,9 @@ public class MyFragment extends Fragment {
         data =  new ArrayList<>();
         adapter = new RecyclerViewAdapter(getActivity(), data);
         mCache = ACache.get(getActivity());
-        initViews();
         initData();
+        initViews();
+
         return view;
     }
 
@@ -70,7 +71,6 @@ public class MyFragment extends Fragment {
             }
         }, 1500);
     }
-
     private void initViews() {
         swipeRefreshLayout.setColorSchemeColors(R.color.primary);
         swipeRefreshLayout.post(new Runnable() {
@@ -87,7 +87,7 @@ public class MyFragment extends Fragment {
                     public void run() {
                         page = 1;
                         data.clear();
-                        getData();
+                        onRefresh();
                     }
                 },2000);
             }
@@ -115,7 +115,7 @@ public class MyFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                getData();
+                                onRefresh();
                                 isLoading = false;
                             }
                         }, 1000);
@@ -144,11 +144,8 @@ public class MyFragment extends Fragment {
 
 
     private void getData() {
-        //这里应该判断网络状态而进行显示缓存还是加载新内容
-
         onRefresh();
     }
-
     private void onRefresh() {
         Retrofit retrofit = new Retrofit
                 .Builder()
@@ -156,11 +153,12 @@ public class MyFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())//解析方式
                 .build();
         Api api = retrofit.create(Api.class);
-        Log.e( "page: ", page+"");
-        Call<TypeData> call = api.data(type,10,page++);
+        Log.e("page: ", page + "");
+        Call<TypeData> call = api.data(type, 10, page++);
         call.enqueue(new Callback<TypeData>() {
             @Override
             public void onResponse(Call<TypeData> call, Response<TypeData> response) {
+
                 data.addAll(response.body().getResults());
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

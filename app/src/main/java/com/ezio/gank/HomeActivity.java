@@ -16,8 +16,8 @@ import android.view.MenuItem;
 
 
 import api.Api;
+import fragment.DataFragment;
 import fragment.HomeFragment;
-import fragment.MyFragment;
 import fragment.WelfareFragment;
 
 public class HomeActivity extends AppCompatActivity
@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity
 
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
-    MyFragment mAndroidFragment,mExpandFragment,mIOSFragment,
+    DataFragment mAndroidFragment,mExpandFragment,mIOSFragment,
             mVideoFragment,mWebFragment;
 
     HomeFragment mHomeFragment;
@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity
             setTitle("福利");
         }else if (id == R.id.nav_anroid) {
             if (mAndroidFragment == null){
-                mAndroidFragment = new MyFragment();
+                mAndroidFragment = new DataFragment();
                 mAndroidFragment.setType(Api.Android);
                 mFragmentTransaction.add(R.id.content_fl, mAndroidFragment);
             } else {
@@ -159,7 +159,7 @@ public class HomeActivity extends AppCompatActivity
             setTitle("Android");
         }else if (id == R.id.nav_ios) {
             if (mIOSFragment == null){
-                mIOSFragment = new MyFragment();
+                mIOSFragment = new DataFragment();
                 mIOSFragment.setType(Api.IOS);
                 mFragmentTransaction.add(R.id.content_fl, mIOSFragment);
             } else {
@@ -168,7 +168,7 @@ public class HomeActivity extends AppCompatActivity
             setTitle("iOS");
         }else if (id == R.id.nav_web) {
             if (mWebFragment == null){
-                mWebFragment = new MyFragment();
+                mWebFragment = new DataFragment();
                 mWebFragment.setType(Api.Web);
                 mFragmentTransaction.add(R.id.content_fl, mWebFragment);
             } else {
@@ -177,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
             setTitle("前端");
         }else if (id == R.id.nav_video) {
             if (mVideoFragment == null){
-                mVideoFragment = new MyFragment();
+                mVideoFragment = new DataFragment();
                 mVideoFragment.setType(Api.VideoRest);
                 mFragmentTransaction.add(R.id.content_fl, mVideoFragment);
             } else {
@@ -186,7 +186,7 @@ public class HomeActivity extends AppCompatActivity
             setTitle("休息视频");
         }else if (id == R.id.nav_expand) {
             if (mExpandFragment == null){
-                mExpandFragment = new MyFragment();
+                mExpandFragment = new DataFragment();
                 mExpandFragment.setType(Api.Expandresources);
                 mFragmentTransaction.add(R.id.content_fl, mExpandFragment);
             } else {
