@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         data.clear();
                         getData();
                     }
-                },2000);
+                },1500);
             }
         });
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -121,8 +121,16 @@ public class MainActivity extends AppCompatActivity {
             Map<String, Object> map = new HashMap<>();
             data.add(map);
         }
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         adapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
+
         adapter.notifyItemRemoved(adapter.getItemCount());
     }
 

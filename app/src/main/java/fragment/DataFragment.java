@@ -87,7 +87,7 @@ public class DataFragment extends Fragment {
                     public void run() {
                         page = 1;
                         data.clear();
-                        onRefresh();
+                        refresh();
                     }
                 },2000);
             }
@@ -115,7 +115,7 @@ public class DataFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                onRefresh();
+                                refresh();
                                 isLoading = false;
                             }
                         }, 1000);
@@ -128,8 +128,10 @@ public class DataFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 String url = data.get(position).getUrl();
+                String desc = data.get(position).getDesc();
                 Intent intent = new Intent(getActivity(), DisplayActivity.class);
                 intent.putExtra("url",url);
+                intent.putExtra("desc",desc);
                 getActivity().startActivity(intent);
             }
 
@@ -144,9 +146,9 @@ public class DataFragment extends Fragment {
 
 
     private void getData() {
-        onRefresh();
+        refresh();
     }
-    private void onRefresh() {
+    private void refresh() {
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl("http://gank.io/")// 定义访问的主机地址
@@ -161,8 +163,15 @@ public class DataFragment extends Fragment {
 
                 data.addAll(response.body().getResults());
                 adapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
+
                 adapter.notifyItemRemoved(adapter.getItemCount());
+
+                swipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
 
                 //缓存当前请求页数+数据(最开始使用Map,Map不支持序列化)
                 //以后进行判断加载

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ezio.gank.DisplayActivity;
 import com.ezio.gank.R;
@@ -87,7 +88,7 @@ public class WelfareFragment extends Fragment {
                     public void run() {
                         page = 1;
                         data.clear();
-                        onRefresh();
+                        refresh();
                     }
                 },2000);
             }
@@ -118,7 +119,7 @@ public class WelfareFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                onRefresh();
+                                refresh();
                                 isLoading = false;
                             }
                         }, 1000);
@@ -127,28 +128,29 @@ public class WelfareFragment extends Fragment {
             }
         });
         //添加点击事件
-        /*adapter.setOnItemClickListener(new WelfareAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new WelfareAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String url = data.get(position).getUrl();
+                Toast.makeText(getActivity(), data.get(position).getWho(), Toast.LENGTH_SHORT).show();
+               /* String url = data.get(position).getUrl();
                 Intent intent = new Intent(getActivity(), DisplayActivity.class);
                 intent.putExtra("url",url);
-                getActivity().startActivity(intent);
+                getActivity().startActivity(intent);*/
             }
 
             public void onItemLongClick(View view, int position) {
 
             }
-        });*/
+        });
 
     }
 
 
 
     private void getData() {
-        onRefresh();
+        refresh();
     }
-    private void onRefresh() {
+    private void refresh() {
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl("http://gank.io/")// 定义访问的主机地址

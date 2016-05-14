@@ -145,7 +145,7 @@ public class HomeActivity extends AppCompatActivity
                 mWelfareFragment = new WelfareFragment();
                 mFragmentTransaction.add(R.id.content_fl, mWelfareFragment);
             } else {
-                mFragmentTransaction.show(mHomeFragment);
+                mFragmentTransaction.show(mWelfareFragment);
             }
             setTitle("福利");
         }else if (id == R.id.nav_anroid) {
